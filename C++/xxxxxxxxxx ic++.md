@@ -1,5 +1,3 @@
-
-
 #？
 
 链表藏匿函数指针伪造面向对象
@@ -266,10 +264,6 @@ cout<<boolalpha;
 cout<<15<16;
 ```
 
-###### 逻辑运算符
-
-与或非
-
 ## int
 
 
@@ -346,6 +340,10 @@ cout<<15<16;
 
 
 
+增加代码可读性
+
+
+
 同一运算符，两边参数不同，作用不同。
 
 ###特点
@@ -385,6 +383,8 @@ sizeof(长度运算符)
 
 
 ### 成员函数实现
+
+1.第一个参数时本类对象时才能用成员函数实现。
 
 自定义整形
 
@@ -427,7 +427,7 @@ Integer Integer::operator+(Integer & Int)
 
 
 
-### 友元函数
+### 友元函数实现
 
 声明
 
@@ -445,11 +445,7 @@ const Integer operator+(int value ,const Integer & Int)
 定义无需作用域运算符，可以访问对象私有成员
 ```
 
-```c++
-
-```
-
-#### 友元or成员to重载
+###友元成员怎么选择
 
 成员函数：
 
@@ -483,6 +479,10 @@ const Integer operator+(int value ,const Integer & Int)
 2.在定义运算符时，必须选择一种格式，而不能同时运用两种格式，否则，将被视为二义性错误，导致编译错误
 3.对于某些运算符来说，成员函数是唯一合法的解释，但在其他情况下，这两种格式没有太大区别，有时 ，根据类的设计，使用非成员函数版本可能较好(尤其是为类定义类型转换时)
 ```
+
+3.重载流运算符返回的就是cout的引用，定义的形参其实就是cout
+
+
 
 
 
@@ -589,6 +589,18 @@ const istream & operator>>(istream & in , Integer & Int)
 
 同函数基本类似，参数，返回值，中间过程；
 
+###重载++
+
+#### 前置++
+
+
+
+#### 后置++
+
+这里我们就用到一个叫做哑元的东西，哑元就是只有类型没有名称的参数，它用来区别不同的函数，比如这里的前++和后++。
+
+现在我们可以用这个哑元来重载后++。
+
 
 
 ##长度运算符
@@ -620,6 +632,14 @@ sizeof()
 ```c++
 double num1 = (int)num2 / (int)num3;
 ```
+
+
+
+# 对象静态数据
+
+# ostream类
+
+ostream在保护区所以只能调用指针或引用
 
 
 
@@ -736,7 +756,7 @@ OPP程序员首先考虑数据，不仅要考虑如何表示这些数据，还�
 
 
 
-### 类的声明和使用
+### 类的声明使用
 
 ####class
 
@@ -903,9 +923,11 @@ long int Landowener::ShowScore()
 
 无返回值
 
-1.如果创建的类中未书写任何构造函数，系统会自动生成默认的无参构造函数(函数为空，什么都不做)
+### 顺序
 
-2.如果书写构造函数，系统就不会再自动生成默认构造；如果希望有这样一个无参构造函数，需要自己显示的书写出来。
+1.虚基类
+
+2.基类
 
 
 
@@ -915,9 +937,23 @@ long int Landowener::ShowScore()
 
 类对象被创建时，编译器为对象分配内存空间并自动调用构造函数以完成成员的初始化
 
+### 成员列表初始化
 
+必须用初始化的情况
+
+1.成员引用
+
+2.成员类
+
+3.父类
+
+4.const常量
 
 ###无参构造
+
+1.如果创建的类中未书写任何构造函数，系统会自动生成默认的无参构造函数(函数为空，什么都不做)
+
+2.如果书写构造函数，系统就不会再自动生成默认构造；如果希望有这样一个无参构造函数，需要自己显示的书写出来。
 
 声明
 
@@ -949,7 +985,7 @@ Student ptr_stu = new stu();
 
 ###一般构造
 
-.构造常用函数重载
+构造常用函数重载
 
 声明
 
@@ -993,17 +1029,31 @@ Student::Student(string name,string des) : m_name(name),m_des(des)//初始化参
     Student * ptr_stu2 = new Student("杰克马2","社会");
 ```
 
-####转换构造
+###转换构造
 
 仅有一个参数的构造；
 
 可用等号赋值；
 
+```c++
+Date(year);
+```
+
+```c++
+Date date = 9;
+```
+
 
 
 ###拷贝构造
 
+### 形参为对象
+
+默认复制构造
+
 ####默认定义
+
+默认为浅复制
 
 对于简单的类，默认拷贝构造是足够的
 
@@ -1227,11 +1277,9 @@ void Student::AddScore(float score)
 
 
 
-
-
 ### 继承方式
 
-![image-20200307220353337](C:\Users\BUPEI\AppData\Roaming\Typora\typora-user-images\image-20200307220353337.png)
+
 
 ```basic
 私有继承：私有继承是一种实现技术，所以在软件的设计层面没有意义，只有在软件的实现层面，能够使私有继承向下隐藏细节
@@ -1311,7 +1359,13 @@ void Student::AddScore(float score)
 
 
 
-### 派生类的构造函数调用机制
+### 继承构造顺序
+
+1.基类构造
+
+2.成员类构造
+
+3.完成派生初始化
 
 从上到下调用，先调用父类，再调用派生类
 
@@ -1325,19 +1379,21 @@ Galon::Galon(string name) : Hero(Name)
 若不初始化调用Hero(Name)
     
 那么
-Galon::Galon() 
+Galon::Galon() ：调用默认Hero(),默认调用Warrior()
 {
-    调用默认Hero()
-    默认调用Warrior()
-
+    
 }
 ```
 
+### 继承析构函数顺序
 
+同构造相反
 
+1.派生类
 
+2.成员类
 
-
+3.基类
 
 ## 多态
 
@@ -1410,15 +1466,31 @@ vector<*>，vector装类的指针比较合适，遍历方法，for( auto it ： 
 
 ​         ![img](file:///C:/Users/BUPEI/AppData/Local/Temp/msohtmlclip1/01/clip_image001.png) 
 
-### 虚析构函数
+##虚析构函数
 
 如果不加virsual派是类对象在释放时只会调用一个析构函数
+
+## 绑定
+
+###编译时多态
+
+
+
+###运行时多态
+
+
+
+
 
 
 
 ## 抽象类
 
 抽象类不可实体化，只能被继承：不可用抽象类定义一个对象
+
+
+
+可以定义抽象类指针引用。
 
 
 
@@ -1432,7 +1504,21 @@ vector<*>，vector装类的指针比较合适，遍历方法，for( auto it ： 
 
 纯虚函数必须有派生类来实现其，否则链接错误，在基类无法调用
 
+###虚函数
 
+父类有虚函数则子类默认为虚函数。
+
+
+
+## 虚基类
+
+
+
+
+
+## 多重继承
+
+一个类继承多个父类。
 
 
 
@@ -3079,3 +3165,119 @@ operator float() const
 type可以是内置类型，类类型以及由typedef定义的类型别名，任何作为函数返回类型的类型（除了void）,都是被支持的，不允许转换为数组或函数类型，可以转换为指针或引用类型
 
 类型转换函数一般不会更改被转换的对象，所以通常被定义为const.
+
+```c++
+class dad
+{
+	pulic:
+	dirve();
+	
+	protect:
+	fixComputer();
+}
+class mum
+{
+	public:
+	sing();
+	
+	private:
+	jiajiao();
+}
+class son：public:dad,
+{
+
+}
+```
+
+
+
+# 链接库
+
+## 静态链接库
+
+```c++
+#include "../lib.h"
+#pragma comment (lib,"../lib.lib")
+```
+
+## 动态链接库
+
+###显式调用：
+
+```c++
+#include "iostream.h"
+
+#include "windows.h"
+
+void main()
+{
+	typedef int (*ADD) (int,int);   
+	ADD  fun=NULL;
+	HINSTANCE hinst=NULL;//HMODULE hinst=NULL;
+	hinst=LoadLibrary("Caculate.dll");
+	if (hinst==NULL)
+	{//没有加载成功
+		MessageBox(NULL,"提示","DLL加载失败",1);
+		return;
+	}
+	fun=(ADD)GetProcAddress(hinst,"add");
+	
+	if (fun==NULL)
+	{	MessageBox(NULL,"提示","函数加载失败",1);
+		return;
+	}
+
+    cout<<fun(5,6)<<endl;
+	FreeLibrary(hinst);
+    
+}
+```
+
+HINSTANCE hinst=NULL;//HMODULE 
+
+hinst=LoadLibrary("Caculate.dll");
+
+fun=(ADD)GetProcAddress(hinst,"add");
+
+FreeLibrary(hinst);
+
+###隐式调用
+
+```c++
+#include "../lib.h"
+#pragma comment (lib,"../lib.lib")
+```
+
+
+
+
+
+## 非MFC
+
+
+
+
+
+
+
+## MFC
+
+
+
+
+
+
+
+## 类
+
+
+
+## .def文件
+
+
+
+LIBRARY "dll"
+
+EXPORTS:
+
+​	ADD @1;
